@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navbar Example</title>
+    <!-- Add Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add Phosphor Icons Web Component -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Add Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Extend Tailwind config for custom colors -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "light-brown": "#D2B48C", // Light brown color, adjust as needed
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <nav class="bg-transparent p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="navbar-icon">
+          <img src="./csgdb.png" alt="CSGDB-icon" class="h-20 w-auto" />
+        </div>
+        <div class="flex space-x-4 space-x-reverse relative">
+          <button
+            class="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full"
+          >
+            خدمات الموارد البشرية
+          </button>
+          <button
+            class="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full"
+          >
+            طلباتي
+          </button>
+          <button
+            class="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full"
+          >
+            لوحة النظام
+          </button>
+          <button
+            id="notificationButton"
+            class="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full flex items-center relative"
+          >
+            <i class="ph ph-bell-simple"></i>
+            <span
+              id="notificationCount"
+              class="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full w-4 h-4 flex items-center justify-center"
+              >2</span
+            >
+          </button>
+          <div
+            id="notificationDropdown"
+            class="hidden absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl z-10"
+          >
+            <div class="p-4 border-b">
+              <h3 class="text-lg font-semibold">الإشعارات</h3>
+            </div>
+            <div class="max-h-64 overflow-y-auto">
+              <div class="p-4 border-b hover:bg-gray-100 cursor-pointer">
+                <p class="font-semibold">إشعار جديد</p>
+                <p class="text-sm text-gray-600">تم الموافقة على طلبك</p>
+              </div>
+              <div class="p-4 border-b hover:bg-gray-100 cursor-pointer">
+                <p class="font-semibold">إشعار جديد</p>
+                <p class="text-sm text-gray-600">لديك مهمة جديدة</p>
+              </div>
+              <div class="p-4 hover:bg-gray-100 cursor-pointer opacity-50">
+                <p class="font-semibold">إشعار مقروء</p>
+                <p class="text-sm text-gray-600">تم تحديث معلومات الحساب</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- New section under the navbar -->
+    <section
+      class="container mx-auto mt-4 px-4 flex justify-between items-center"
+    >
+      <!-- User info on the right side -->
+      <div class="flex items-center">
+        <div>
+          <i class="m-6 text-5xl ph ph-user"></i>
+        </div>
+        <div class="ml-3">
+          <h2 class="text-lg font-semibold">العنود بهلول</h2>
+          <p class="text-sm text-gray-600">رئيس قسم التعيينات</p>
+        </div>
+      </div>
+      <!-- New task button on the left side -->
+      <button
+        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full flex items-center"
+      >
+        إنشاء طلب جديد
+        <i class="m-2 text-1xl ph ph-file-plus"></i>
+      </button>
+    </section>
+
+    <!-- New section with three columns -->
+    <section class="container mx-auto mt-8 px-4">
+      <div class="flex flex-wrap -mx-4">
+        <!-- First column (2/12) -->
+        <div class="w-full lg:w-2/12 px-4">
+          <div class="bg-gray-100 p-6 rounded-lg h-full shadow-lg">
+            <!-- Content for the third column -->
+            <h3 class="text-xl font-bold mb-4 text-end">
+              <i class="mb-12 text-7xl ph ph-cards"></i>
+            </h3>
+            <div class="my-12 py-1"></div>
+            <p>طلباتي 12</p>
+          </div>
+        </div>
+
+        <!-- Second column (5/12) -->
+        <div class="w-full lg:w-5/12 px-4 mb-8 lg:mb-0">
+          <div class="bg-white p-6 rounded-lg h-full shadow-lg">
+            <h3 class="text-xl font-bold mb-4">عدد الطلبات</h3>
+            <div class="flex justify-between items-center">
+              <div class="w-1/2">
+                <canvas id="doughnutChart" width="150" height="150"></canvas>
+              </div>
+              <div id="chartLegend" class="w-1/2"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Third column (5/12) -->
+        <div class="w-full lg:w-5/12 px-4 mb-8 lg:mb-0">
+          <div class="bg-white p-6 rounded-lg h-full shadow-lg">
+            <h3 class="text-xl font-bold mb-4">إشعاراتي</h3>
+            <div class="space-y-4">
+              <!-- Record 1 -->
+              <div class="flex justify-between items-center">
+                <div class="text-right">
+                  <p class="font-semibold">طلب إجازة</p>
+                  <p class="text-sm text-gray-500">٢٠ مايو ٢٠٢٣</p>
+                </div>
+                <span
+                  class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-200 text-yellow-800"
+                >
+                  قيد الانتظار
+                </span>
+              </div>
+
+              <!-- Record 2 -->
+              <div class="flex justify-between items-center">
+                <div class="text-right">
+                  <p class="font-semibold">طلب ترقية</p>
+                  <p class="text-sm text-gray-500">١٥ مايو ٢٠٢٣</p>
+                </div>
+                <span
+                  class="px-2 py-1 text-xs font-semibold rounded-full bg-green-200 text-green-800"
+                >
+                  تمت الموافقة
+                </span>
+              </div>
+
+              <!-- Record 3 -->
+              <div class="flex justify-between items-center">
+                <div class="text-right">
+                  <p class="font-semibold">طلب نقل</p>
+                  <p class="text-sm text-gray-500">١٠ مايو ٢٠٢٣</p>
+                </div>
+                <span
+                  class="px-2 py-1 text-xs font-semibold rounded-full bg-red-200 text-red-800"
+                >
+                  مرفوض
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- New "طلباتي" (My Requests) section -->
+    <section class="container mx-auto mt-8 px-4">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">طلباتي</h2>
+        <button
+          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full flex items-center"
+        >
+          تحديث
+          <i class="ph ph-arrow-clockwise mr-2"></i>
+        </button>
+      </div>
+
+      <!-- Table-like structure using divs -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <!-- Table header -->
+        <div class="grid grid-cols-9 gap-4 bg-gray-100 p-4 font-bold text-sm">
+          <div>الرقم</div>
+          <div>اسم المرشح</div>
+          <div>التخصص</div>
+          <div>حالة الطلب</div>
+          <div>الإدارة</div>
+          <div>تاريخ بدء الخدمة</div>
+          <div>تاريخ انتهاء الخدمة</div>
+          <div>عدد التأخير</div>
+          <div>الإجراءات</div>
+        </div>
+
+        <!-- Table rows will be inserted here by JavaScript -->
+        <div id="requestsTableBody"></div>
+      </div>
+    </section>
+
+    <!-- Rest of your page content goes here -->
+
+    <!-- Include the JavaScript file -->
+    <script src="index.js"></script>
+  </body>
+</html>
